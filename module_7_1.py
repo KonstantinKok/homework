@@ -1,6 +1,8 @@
 from pprint import pprint
 
-# Для проверки создать чистый файл products.txt, либо скачать по ссылке
+# Для проверки создать чистый файл products.txt, либо скачать по ссылке:
+# https://github.com/KonstantinKok/homework/blob/main/products.txt
+
 
 class Product:
     def __init__(self, name, weight, category):
