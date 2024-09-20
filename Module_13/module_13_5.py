@@ -71,50 +71,6 @@ async def all_messages(message):
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
 
-class UserState(StatesGroup):
-    age = State()
-    growth = State()
-    weight = State()
-
-@dp.message_handler(text= ['Информация'])
-async def info_bot(message):
-    await message.answer(
-        'В данном боте используйтся упрощённая формула Миффлина - Сан Жеора' 
-        'для подсчёта нормы калорий для мужчин. Введите команду /start, чтобы продолжить')
-
-@dp.message_handler(text= ['Расcчет'])
-async def set_age(message):
-    await message.answer('Введите свой возраст:')
-    await UserState.age.set()
-
-@dp.message_handler(state=UserState.age )
-async def set_growth(message, state):
-    await state.update_data(age= int(message.text))
-    date = await state.get_data()
-    await message.answer('Введите свой рост')
-    await UserState.growth.set()
-
-@dp.message_handler(state=UserState.growth )
-async def set_weight(message, state):
-    await state.update_data(growth= int(message.text))
-    date = await state.get_data()
-    await message.answer('Введите свой вес:')
-    await UserState.weight.set()
-
-@dp.message_handler(state=UserState.weight )
-async def time_aut(message, state):
-    await state.update_data(weight= int(message.text))
-    date = await state.get_data()
-    await message.answer(f'Подождите, идет расчет калорий.')
-    sleep(5) #Просто для важности
-    await message.answer(f'Ваша норма Калорий - '
-                         f'{10 * date["weight"] + 6.25 * date["growth"] + 5 * date["age"] + 5}')
-    await  state.finish()
-
-@dp.message_handler()
-async def all_messages(message):
-    await message.answer('Введите команду /start, чтобы начать')
-
 
 
 if __name__ == '__main__':
