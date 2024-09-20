@@ -9,7 +9,7 @@ from babel.dates import date_
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
-api = '7278751243:AAHx3xwPDpqL6TxF-bfBQ6t3Ha9ZDA9A98Y'    # Введите ваш ключ TelegramBot
+api = ''    # Введите ваш ключ TelegramBot
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
