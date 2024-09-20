@@ -66,12 +66,6 @@ async def time_aut(message, state):
 async def all_messages(message):
     await message.answer('Введите команду /start, чтобы начать')
 
-
-
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
 
-
-
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
