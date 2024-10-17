@@ -9,17 +9,20 @@ from time import sleep
 
 from pyexpat.errors import messages
 
-api = ''    # Введите ваш ключ TelegramBot
+api = '8108583510:AAH1LVSZVCvhcXBbwXF49rCamS6y7xoNRzA'    # Введите ваш ключ TelegramBot
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 kb = InlineKeyboardMarkup()
+ki = InlineKeyboardMarkup()
 button1 = InlineKeyboardButton(text='Формулы расчета', callback_data='formulas')
 button2 = InlineKeyboardButton(text='Мужской',callback_data='calories man')
 button3 = InlineKeyboardButton(text='Женский',callback_data='calories woman')
+button4 = InlineKeyboardButton(text='Рассчитать норму калорий',callback_data='calories')
 kb.add(button1)
-kb.add(button2)
-kb.add(button3)
+ki.add(button2)
+ki.add(button3)
+kb.add(button4)
 
 class UserState(StatesGroup,):
     age_man = State()
@@ -29,10 +32,14 @@ class UserState(StatesGroup,):
     growth_woman = State()
     weight_woman = State()
 
-
-@dp.message_handler(text=['Расчитать'])
+@dp.message_handler(commands=['start'])
 async def start(message):
-    await message.answer("Выбирите опцию", reply_markup=kb)
+    await message.answer("Привет! Я бот помогающий твоему здоровью", reply_markup=kb)
+
+
+@dp.callback_query_handler(text='calories')
+async def сalculation(call):
+    await call.message.answer("Выбирите опцию", reply_markup=ki)
 
 @dp.callback_query_handler(text='formulas')
 async def get_formulas(call):
@@ -107,7 +114,7 @@ async def time_aut_woman(message, state):
 
 @dp.message_handler()
 async def all_messages(message):
-    await message.answer('Напишите "Расчитать", чтобы начать')
+    await message.answer('Напишите "/start", чтобы начать')
 
 
 
