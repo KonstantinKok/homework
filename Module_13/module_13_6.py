@@ -9,7 +9,7 @@ from time import sleep
 
 from pyexpat.errors import messages
 
-api = '8108583510:AAH1LVSZVCvhcXBbwXF49rCamS6y7xoNRzA'    # Введите ваш ключ TelegramBot
+api = ''    # Введите ваш ключ TelegramBot
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
