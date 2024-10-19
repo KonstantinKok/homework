@@ -32,5 +32,21 @@ results1 = cursor.fetchall()
 for row in results1:
   print(row)
 
+# Удалите из базы данных not_telegram.db запись с id = 6
+cursor.execute("DELETE FROM Users WHERE id = ?", (6,))
+
+#Подсчитать общее количество записей.
+cursor.execute('SELECT COUNT(*) FROM Users')
+total_users = cursor.fetchone()[0]
+print(f"Общее колличество стало: {total_users}")
+
+#Посчитать сумму всех балансов.
+cursor.execute("SELECT SUM(balance) FROM Users")
+balance_sum = cursor.fetchone()[0]
+print(f"Общая сумма баланса стала:) {balance_sum} руб.")
+
+#Вывести в консоль средний баланс всех пользователя.
+print(f"Средний баланс пользователей: {int(balance_sum / total_users)} руб.")
+
 connection.commit()
 connection.close()
