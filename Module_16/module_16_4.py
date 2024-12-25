@@ -1,59 +1,50 @@
-from fastapi import FastAPI, Body, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, Path
+from pydantic import BaseModel, Field
+from typing import Annotated
 from typing import List
+
 
 app = FastAPI()
 
 users = []
 
-
 class User(BaseModel):
-    id: int = None
+    id: int
     username: str
-    age: int = None
+    age: int
 
 
-@app.get('/users')
+@app.get("/users")
 async def get_all_users() -> List[User]:
     return users
 
+@app.post("/user/{username}/{age}", response_model=User)
+async def create_user(username: Annotated[str, Path(min_length=3, max_length=20,
+                                                 description='Enter user name', example='UrbanUser')],
+                   age: Annotated[int, Path(ge=18, le=120, description='Enter age', example=24)]) -> User:
+    user_id = max((t.id for t in users), default=0) + 1
+    new_user = User(id=user_id, username=username, age=age)
+    users.append(new_user)
+    return new_user
 
-@app.post('/user/{username}/{age}')
-async def post_user(user: User, username: str, age: int):
-    len_user = len(users)
-    if len_user == 0:
-        user.id = 1
-    else:
-        user.id = users[len_user - 1].id + 1
-    user.username = username
-    user.age = age
-    users.append(user)
-    return user
-
-
-@app.put('/user/{user_id}/{username}/{age}')
-async def update_user(user_id: int, username: str, age: int, user: str = Body()):
-    raise1 = True
-    for edit_user in users:
-        if edit_user.id == user_id:
-            edit_user.username = username
-            edit_user.age = age
-            return edit_user
-    if raise1:
-        raise HTTPException(status_code=404, detail='User was not found')
+@app.put("/user/{user_id}/{username}/{age}")
+async def update_user( user_id: Annotated[int, Path(ge=1, le=150, description='Enter user ID', example=1)],
+                       username: Annotated[str, Path(min_length=3, max_length=20,
+                                                     description='Enter user name', example='UrbanUser')],
+                       age: Annotated[int, Path(ge=18, le=120, description='Enter age', example=24)]):
+        for u in users:
+            if u.id == user_id:
+                u.username = username
+                u.age = age
+        return u
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
 
 
-@app.delete('/user/{user_id}')
-async def del_user(user_id: int):
-    raise2 = True
-    ind_del = 0
-    for delete_user in users:
-        if delete_user.id == user_id:
-            users.pop(ind_del)
-            return delete_user
-        ind_del += 1
-    if raise2:
-        raise HTTPException(status_code=404, detail='User was not found')
 
-
-# python -m uvicorn module_16_4:app
+@app.delete("/user/{user_id}")
+async def delete_user(user_id: Annotated[int, Path(ge=1, le=150, description='Enter user ID', example=1)]):
+    for i, t in enumerate(users):
+        if t.id == user_id:
+            del users[i]
+    return {"Пользователь удален"}
+    raise HTTPException(status_code=404, detail="Задача не найдена")
